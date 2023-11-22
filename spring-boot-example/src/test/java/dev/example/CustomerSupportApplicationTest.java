@@ -1,8 +1,11 @@
 package dev.example;
 
+import com.slack.api.bolt.AppConfig;
+import com.slack.api.bolt.socket_mode.SocketModeApp;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import com.slack.api.bolt.App;
 
 @SpringBootTest
 class CustomerSupportApplicationTest {
@@ -11,7 +14,17 @@ class CustomerSupportApplicationTest {
     CustomerSupportAgent agent;
 
     @Test
-    void should_provide_booking_details_and_explain_why_cancellation_is_not_possible() {
+    void should_provide_booking_details_and_explain_why_cancellation_is_not_possible() throws Exception {
+
+        var appConfig = AppConfig.builder()
+                .singleTeamBotToken("xoxb-")
+                .build();
+        var app = new App(appConfig);
+        app.command("/hello", (req, ctx) -> {
+            return ctx.ack(":wave: Hello!");
+        });
+
+        new SocketModeApp("xapp-", app).start();
 
         // Please define API keys in application.properties before running this test.
         // Tip: Use gpt-4 for this example, as gpt-3.5-turbo tends to hallucinate often and invent name and surname.
